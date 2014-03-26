@@ -1,0 +1,25 @@
+{
+  "name": "safari-push-notifications",
+  "version": "0.0.1",
+  "description": "Helper methods for generating resources required by Apple's Safari Push Notifications (http://l.brow.si/1rAeIvg)",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MySiteApp/node-safari-push-notifications"
+  },
+  "keywords": [
+    "safari",
+    "push",
+    "notifications",
+    "apple"
+  ],
+  "author": "Kobi Meirson <kobi@brow.si>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MySiteApp/node-safari-push-notifications/issues"
+  },
+  "homepage": "https://github.com/MySiteApp/node-safari-push-notifications"
+}
