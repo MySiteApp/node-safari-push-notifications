@@ -6,13 +6,13 @@ This library was written while trying to implement node.js server that answers S
 
 ## Installation
 
-Via [npm][]:
+Stable version:
 
 	$ npm install safari-push-notifications
 
-Straight from git:
+From git:
 
-	$ npm install git://github.com/MySiteApp/safari-push-notifications.git
+	$ npm install git://github.com/MySiteApp/node-safari-push-notifications.git
 
 # Example
 Certificate and Private Key should be in PEM format (pKey without password for now...)
