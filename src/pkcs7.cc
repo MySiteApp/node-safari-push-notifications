@@ -79,7 +79,7 @@ Handle<Value> Sign(const Arguments& args) {
   // Let's return the BIO as Buffer
   BUF_MEM *bptr;
   BIO_get_mem_ptr(out, &bptr);
-  BIO_set_close(out, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
+  (void)BIO_set_close(out, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
   (void)BIO_free(out);
 
   // @see http://luismreis.github.io/node-bindings-guide/docs/returning.html
