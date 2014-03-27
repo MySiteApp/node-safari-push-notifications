@@ -71,7 +71,7 @@ static int B64_write_PKCS7(BIO *bio, PKCS7 *p7)
     }
     bio = BIO_push(b64, bio);
     i2d_PKCS7_bio(bio, p7);
-    BIO_flush(bio);
+    (void)BIO_flush(bio);
     bio = BIO_pop(bio);
     BIO_free(b64);
     return 1;

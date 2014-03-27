@@ -8,6 +8,8 @@
 #include <openssl/pem.h>
 #include <openssl/err.h>
 
+#include <string.h>
+
 using namespace v8;
 
 Handle<Value> Sign(const Arguments& args) {
@@ -78,7 +80,7 @@ Handle<Value> Sign(const Arguments& args) {
   BUF_MEM *bptr;
   BIO_get_mem_ptr(out, &bptr);
   BIO_set_close(out, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
-  BIO_free(out);
+  (void)BIO_free(out);
 
   // @see http://luismreis.github.io/node-bindings-guide/docs/returning.html
   node::Buffer *slowBuffer = node::Buffer::New(bptr->length);
