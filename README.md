@@ -3,6 +3,9 @@ node-safari-push-notifications
 
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://l.brow.si/1rAeIvg).
 
+# Note
+When building this module, the `PKCS7_Sign` and `SMIME_write_PKCS7` embedded in OS X 10.9 continued to fail.
+So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)'s version and it works just as the companion example from Apple.
 
 # License
 
