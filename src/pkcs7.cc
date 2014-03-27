@@ -6,7 +6,7 @@
 #include "openssl.h"
 
 #include <openssl/pem.h>
-
+#include <openssl/err.h>
 
 using namespace v8;
 
@@ -30,7 +30,7 @@ Handle<Value> Sign(const Arguments& args) {
   BIO *bio1 = BIO_new_mem_buf(certData, -1);
   X509 *cert = PEM_read_bio_X509(bio1, NULL, NULL, NULL);
   if (cert == NULL) {
-      ThrowException(Exception::TypeError(String::New("Failed to parse certificate")));
+      ThrowException(Exception::TypeError(String::New(ERR_error_string(ERR_peek_error(), NULL))));
       return scope.Close(Undefined());
   }
   BIO_free(bio1);
@@ -40,7 +40,7 @@ Handle<Value> Sign(const Arguments& args) {
   BIO *bio2 = BIO_new_mem_buf(pKeyData, -1);
   EVP_PKEY *pKey = PEM_read_bio_PrivateKey(bio2, NULL, NULL, NULL);
   if (pKey == NULL) {
-      ThrowException(Exception::TypeError(String::New("Failed to parse private key")));
+      ThrowException(Exception::TypeError(String::New(ERR_error_string(ERR_peek_error(), NULL))));
       return scope.Close(Undefined());
   }
   BIO_free(bio2);
@@ -59,7 +59,7 @@ Handle<Value> Sign(const Arguments& args) {
   // Sign
   PKCS7 *p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
   if (p7 == NULL) {
-      ThrowException(Exception::TypeError(String::New("Signing failed.")));
+      ThrowException(Exception::TypeError(String::New(ERR_error_string(ERR_peek_error(), NULL))));
       return scope.Close(Undefined());
   }
 
