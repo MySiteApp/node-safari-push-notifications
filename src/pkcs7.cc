@@ -10,21 +10,23 @@
 
 #include <string.h>
 
+#include <nan.h>
+
 using namespace v8;
 
-Handle<Value> Sign(const Arguments& args) {
-  HandleScope scope;
+NAN_METHOD(Sign) {
+  NanScope();
 
   long flags = PKCS7_BINARY | PKCS7_DETACHED | PKCS7_NOOLDMIMETYPE;
 
   if (args.Length() != 3) {
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments (should be 3)")));
-    return scope.Close(Undefined());
+    NanThrowError(Exception::TypeError(NanNew("Wrong number of arguments (should be 3)")));
+    NanReturnValue(NanUndefined());
   }
 
   if (!args[0]->IsObject() || !args[1]->IsObject() || !args[2]->IsObject()) {
-    ThrowException(Exception::TypeError(String::New("All parameters should be Buffers")));
-    return scope.Close(Undefined());
+    NanThrowError(Exception::TypeError(NanNew("All parameters should be Buffers")));
+    NanReturnValue(NanUndefined());
   }
 
   // Get cert
@@ -32,8 +34,8 @@ Handle<Value> Sign(const Arguments& args) {
   BIO *bio1 = BIO_new_mem_buf(certData, -1);
   X509 *cert = PEM_read_bio_X509(bio1, NULL, NULL, NULL);
   if (cert == NULL) {
-      ThrowException(Exception::TypeError(String::New(ERR_error_string(ERR_peek_error(), NULL))));
-      return scope.Close(Undefined());
+      NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
+      NanReturnValue(NanUndefined());
   }
   BIO_free(bio1);
 
@@ -42,8 +44,8 @@ Handle<Value> Sign(const Arguments& args) {
   BIO *bio2 = BIO_new_mem_buf(pKeyData, -1);
   EVP_PKEY *pKey = PEM_read_bio_PrivateKey(bio2, NULL, NULL, NULL);
   if (pKey == NULL) {
-      ThrowException(Exception::TypeError(String::New(ERR_error_string(ERR_peek_error(), NULL))));
-      return scope.Close(Undefined());
+      return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
+      //return NanReturnValue(NanUndefined());
   }
   BIO_free(bio2);
 
@@ -51,8 +53,8 @@ Handle<Value> Sign(const Arguments& args) {
   const char* inData = node::Buffer::Data(args[2]->ToObject());
   BIO *in = BIO_new_mem_buf((void*)inData, -1);
   if (in == NULL) {
-      ThrowException(Exception::TypeError(String::New("Failed allocating memory for the data")));
-      return scope.Close(Undefined());
+      return NanThrowError(Exception::TypeError(NanNew("Failed allocating memory for the data")));
+      //return NanReturnValue(NanUndefined());
   }
 
   // Allocate memory for output
@@ -61,8 +63,8 @@ Handle<Value> Sign(const Arguments& args) {
   // Sign
   PKCS7 *p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
   if (p7 == NULL) {
-      ThrowException(Exception::TypeError(String::New(ERR_error_string(ERR_peek_error(), NULL))));
-      return scope.Close(Undefined());
+      return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
+      //return NanReturnValue(NanUndefined());
   }
 
   (void)BIO_reset(in);
@@ -82,21 +84,21 @@ Handle<Value> Sign(const Arguments& args) {
   (void)BIO_set_close(out, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
   (void)BIO_free(out);
 
-  // @see http://luismreis.github.io/node-bindings-guide/docs/returning.html
-  node::Buffer *slowBuffer = node::Buffer::New(bptr->length);
-  memcpy(node::Buffer::Data(slowBuffer), bptr->data, bptr->length);
+  v8::Local<v8::Object> slowBuffer = NanNewBufferHandle(bptr->data, bptr->length);
 
-  Local<Object> globalObj = Context::GetCurrent()->Global();
-  Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));
-  Handle<Value> constructorArgs[3] = { slowBuffer->handle_, v8::Integer::New(bptr->length), v8::Integer::New(0) };
+  //memcpy(node::Buffer::Data(slowBuffer), bptr->data, bptr->length);
+
+  Local<Object> globalObj = NanGetCurrentContext()->Global();
+  Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(NanNew("Buffer")));
+  Handle<Value> constructorArgs[3] = { slowBuffer, NanNew<Integer>(static_cast<unsigned int>(bptr->length)), NanNew<Integer>(0) };
   Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
   BUF_MEM_free(bptr);
-  return scope.Close(actualBuffer);
+  NanReturnValue(actualBuffer);
 }
 
 void Init(Handle<Object> exports) {
-  exports->Set(String::NewSymbol("sign"),
-      FunctionTemplate::New(Sign)->GetFunction());
+  exports->Set(NanNew("sign"),
+      NanNew<FunctionTemplate>(Sign)->GetFunction());
 }
 
 NODE_MODULE(pkcs7, Init)

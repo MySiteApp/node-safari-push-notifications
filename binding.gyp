@@ -29,7 +29,7 @@
             '-l<(openssl_root)/lib/libeay32.lib',
           ],
           'include_dirs': [
-            '<(openssl_root)/include',
+            '<(openssl_root)/include'
           ],
         }, { # OS!="win"
           'include_dirs': [
@@ -37,6 +37,10 @@
             '<(node_root_dir)/deps/openssl/openssl/include'
           ],
         }],
+      ],
+
+      'include_dirs': [
+        "<!(node -e \"require('nan')\")"
       ]
     }
   ]
