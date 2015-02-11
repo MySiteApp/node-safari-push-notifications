@@ -20,13 +20,11 @@ NAN_METHOD(Sign) {
   long flags = PKCS7_BINARY | PKCS7_DETACHED | PKCS7_NOOLDMIMETYPE;
 
   if (args.Length() != 3) {
-    NanThrowError(Exception::TypeError(NanNew("Wrong number of arguments (should be 3)")));
-    NanReturnValue(NanUndefined());
+    return NanThrowError(Exception::TypeError(NanNew("Wrong number of arguments (should be 3)")));
   }
 
   if (!args[0]->IsObject() || !args[1]->IsObject() || !args[2]->IsObject()) {
-    NanThrowError(Exception::TypeError(NanNew("All parameters should be Buffers")));
-    NanReturnValue(NanUndefined());
+    return NanThrowError(Exception::TypeError(NanNew("All parameters should be Buffers")));
   }
 
   // Get cert
@@ -34,8 +32,7 @@ NAN_METHOD(Sign) {
   BIO *bio1 = BIO_new_mem_buf(certData, -1);
   X509 *cert = PEM_read_bio_X509(bio1, NULL, NULL, NULL);
   if (cert == NULL) {
-      NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
-      NanReturnValue(NanUndefined());
+      return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
   }
   BIO_free(bio1);
 
