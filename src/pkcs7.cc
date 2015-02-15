@@ -42,7 +42,6 @@ NAN_METHOD(Sign) {
   EVP_PKEY *pKey = PEM_read_bio_PrivateKey(bio2, NULL, NULL, NULL);
   if (pKey == NULL) {
       return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
-      //return NanReturnValue(NanUndefined());
   }
   BIO_free(bio2);
 
@@ -51,7 +50,6 @@ NAN_METHOD(Sign) {
   BIO *in = BIO_new_mem_buf((void*)inData, -1);
   if (in == NULL) {
       return NanThrowError(Exception::TypeError(NanNew("Failed allocating memory for the data")));
-      //return NanReturnValue(NanUndefined());
   }
 
   // Allocate memory for output
@@ -61,7 +59,6 @@ NAN_METHOD(Sign) {
   PKCS7 *p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
   if (p7 == NULL) {
       return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
-      //return NanReturnValue(NanUndefined());
   }
 
   (void)BIO_reset(in);
@@ -83,8 +80,6 @@ NAN_METHOD(Sign) {
 
   v8::Local<v8::Object> slowBuffer = NanNewBufferHandle(bptr->data, bptr->length);
 
-  //memcpy(node::Buffer::Data(slowBuffer), bptr->data, bptr->length);
-
   Local<Object> globalObj = NanGetCurrentContext()->Global();
   Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(NanNew("Buffer")));
   Handle<Value> constructorArgs[3] = { slowBuffer, NanNew<Integer>(static_cast<unsigned int>(bptr->length)), NanNew<Integer>(0) };
@@ -94,7 +89,7 @@ NAN_METHOD(Sign) {
 }
 
 void Init(Handle<Object> exports) {
-  exports->Set(NanNew("sign"),
+  exports->Set(NanNew<String>("sign"),
       NanNew<FunctionTemplate>(Sign)->GetFunction());
 }
 
