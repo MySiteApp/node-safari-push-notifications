@@ -47,8 +47,15 @@ So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)
 
 # Changelog
 
+## 0.0.2
+- Node.js v0.12 support
+- Using [NaN](https://github.com/rvagg/nan) for binding abstraction
+
 ## 0.0.1
 - First version.
+
+# Credits
+- [@KenanSulayman](https://github.com/KenanSulayman) for node 0.12 + NaN support (v0.0.2)
 
 # License
 
