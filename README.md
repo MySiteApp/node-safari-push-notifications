@@ -47,6 +47,10 @@ So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)
 
 # Changelog
 
+## 0.1.0
+- [NaN](https://github.com/rvagg/nan) 2 [#4]
+- Node 4.x support
+
 ## 0.0.2
 - Node.js v0.12 support
 - Using [NaN](https://github.com/rvagg/nan) for binding abstraction
@@ -61,7 +65,7 @@ So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Brow.si
+Copyright (c) 2014 MySiteApp Ltd.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

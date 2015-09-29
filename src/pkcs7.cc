@@ -12,44 +12,52 @@
 
 #include <nan.h>
 
-using namespace v8;
+using Nan::CopyBuffer;
+using Nan::GetFunction;
+using Nan::HandleScope;
+using Nan::New;
+using Nan::ThrowTypeError;
+using Nan::Set;
+
+using v8::String;
+using v8::FunctionTemplate;
 
 NAN_METHOD(Sign) {
-  NanScope();
+  HandleScope scope;
 
   long flags = PKCS7_BINARY | PKCS7_DETACHED | PKCS7_NOOLDMIMETYPE;
 
-  if (args.Length() != 3) {
-    return NanThrowError(Exception::TypeError(NanNew("Wrong number of arguments (should be 3)")));
+  if (info.Length() != 3) {
+    return ThrowTypeError("Wrong number of arguments (should be 3)");
   }
 
-  if (!args[0]->IsObject() || !args[1]->IsObject() || !args[2]->IsObject()) {
-    return NanThrowError(Exception::TypeError(NanNew("All parameters should be Buffers")));
+  if (!info[0]->IsObject() || !info[1]->IsObject() || !info[2]->IsObject()) {
+    return ThrowTypeError("All parameters should be Buffers");
   }
 
   // Get cert
-  char* certData = node::Buffer::Data(args[0]->ToObject());
+  char* certData = node::Buffer::Data(info[0]->ToObject());
   BIO *bio1 = BIO_new_mem_buf(certData, -1);
   X509 *cert = PEM_read_bio_X509(bio1, NULL, NULL, NULL);
   if (cert == NULL) {
-      return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
+      return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
   }
   BIO_free(bio1);
 
   // Get private key
-  char* pKeyData = node::Buffer::Data(args[1]->ToObject());
+  char* pKeyData = node::Buffer::Data(info[1]->ToObject());
   BIO *bio2 = BIO_new_mem_buf(pKeyData, -1);
   EVP_PKEY *pKey = PEM_read_bio_PrivateKey(bio2, NULL, NULL, NULL);
   if (pKey == NULL) {
-      return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
+      return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
   }
   BIO_free(bio2);
 
   // In data
-  const char* inData = node::Buffer::Data(args[2]->ToObject());
+  const char* inData = node::Buffer::Data(info[2]->ToObject());
   BIO *in = BIO_new_mem_buf((void*)inData, -1);
   if (in == NULL) {
-      return NanThrowError(Exception::TypeError(NanNew("Failed allocating memory for the data")));
+      return ThrowTypeError("Failed allocating memory for the data");
   }
 
   // Allocate memory for output
@@ -58,7 +66,7 @@ NAN_METHOD(Sign) {
   // Sign
   PKCS7 *p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
   if (p7 == NULL) {
-      return NanThrowError(Exception::TypeError(NanNew(ERR_error_string(ERR_peek_error(), NULL))));
+      return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
   }
 
   (void)BIO_reset(in);
@@ -78,19 +86,13 @@ NAN_METHOD(Sign) {
   (void)BIO_set_close(out, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
   (void)BIO_free(out);
 
-  v8::Local<v8::Object> slowBuffer = NanNewBufferHandle(bptr->data, bptr->length);
-
-  Local<Object> globalObj = NanGetCurrentContext()->Global();
-  Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(NanNew("Buffer")));
-  Handle<Value> constructorArgs[3] = { slowBuffer, NanNew<Integer>(static_cast<unsigned int>(bptr->length)), NanNew<Integer>(0) };
-  Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
+  info.GetReturnValue().Set(CopyBuffer(bptr->data, bptr->length).ToLocalChecked());
   BUF_MEM_free(bptr);
-  NanReturnValue(actualBuffer);
 }
 
-void Init(Handle<Object> exports) {
-  exports->Set(NanNew<String>("sign"),
-      NanNew<FunctionTemplate>(Sign)->GetFunction());
+NAN_MODULE_INIT(Init) {
+  Set(target, New<String>("sign").ToLocalChecked(),
+      GetFunction(New<FunctionTemplate>(Sign)).ToLocalChecked());
 }
 
 NODE_MODULE(pkcs7, Init)
