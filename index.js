@@ -57,7 +57,7 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, inter
         content = PKCS7_CONTENT_REGEX.exec(pkcs7sig.toString());
 
     content = new Buffer(content[1], 'base64');
-    console.log(content.toString("base64"))
     pkg.addFile("signature", content);
+
     return pkg.toBuffer();
 };
