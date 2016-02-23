@@ -16,7 +16,7 @@ push.websiteJSON = function (name, pushId, allowedDomains, urlFormattingString, 
     };
 };
 
-push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData) {
+push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, intermediate) {
     if (typeof websiteJSON !== 'object' && !('websitePushID' in websiteJSON)) {
         throw new Error("websiteJSON should be generated using websiteJSON() method");
     }
@@ -50,9 +50,14 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData) {
     if (typeof pKeyData == 'string') {
         pKeyData = new Buffer(pKeyData);
     }
-    var pkcs7sig = pkcs7.sign(certData, pKeyData, manifestContent),
+    if(intermediate && typeof intermediate == 'string') {
+        intermediate = new Buffer(intermediate)
+    }
+    var pkcs7sig = intermediate ? pkcs7.sign(certData, pKeyData, manifestContent, intermediate) : pkcs7.sign(certData, pKeyData, manifestContent),
         content = PKCS7_CONTENT_REGEX.exec(pkcs7sig.toString());
+
     content = new Buffer(content[1], 'base64');
+    console.log(content.toString("base64"))
     pkg.addFile("signature", content);
     return pkg.toBuffer();
 };
