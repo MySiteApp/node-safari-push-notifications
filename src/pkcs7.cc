@@ -27,12 +27,16 @@ NAN_METHOD(Sign) {
 
   long flags = PKCS7_BINARY | PKCS7_DETACHED | PKCS7_NOOLDMIMETYPE;
 
-  if (info.Length() != 3) {
+  if (info.Length() < 3) {
     return ThrowTypeError("Wrong number of arguments (should be 3)");
   }
 
   if (!info[0]->IsObject() || !info[1]->IsObject() || !info[2]->IsObject()) {
     return ThrowTypeError("All parameters should be Buffers");
+  }
+
+  if(info.Length() == 4 && !info[3]->IsObject()) {
+    return ThrowTypeError("intermediate certificate should be Buffer");
   }
 
   // Get cert
@@ -62,9 +66,29 @@ NAN_METHOD(Sign) {
 
   // Allocate memory for output
   BIO *out = BIO_new(BIO_s_mem());
+  PKCS7 *p7;
 
-  // Sign
-  PKCS7 *p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
+  if(info.Length() == 3) {
+    // Sign
+    p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
+  }
+  else {
+    // Sign with extra cert
+    
+    char* intermediateCert = node::Buffer::Data(info[3]->ToObject());
+    BIO *bio4 = BIO_new_mem_buf(intermediateCert, -1);
+    X509 *intermediate = PEM_read_bio_X509(bio4, NULL, NULL, NULL);
+    if (intermediate == NULL) {
+        return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
+    }
+    BIO_free(bio4);
+
+    STACK_OF(X509) *sk = sk_X509_new_null();
+    sk_X509_push(sk, intermediate);
+
+    p7 = _PKCS7_Sign(cert, pKey, sk, in, flags);
+  }
+
   if (p7 == NULL) {
       return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
   }
