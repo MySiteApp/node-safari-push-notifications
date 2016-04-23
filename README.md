@@ -1,6 +1,8 @@
 node-safari-push-notifications
 ==============================
 
+[![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
+
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://l.brow.si/1rAeIvg).
 This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
 
