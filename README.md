@@ -23,6 +23,7 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 
 	var cert = fs.readFileSync('cert.pem'),
         key = fs.readFileSync('key.pem'),
+				intermediate = fs.readFileSync('intermediate.crt'),
         websiteJson = pushLib.websiteJSON(
             "My Site", // websiteName
             "web.com.mysite.news", // websitePushID
@@ -35,7 +36,8 @@ Certificate and Private Key should be in PEM format (pKey without password for n
             websiteJson, // The object from before / your own website.json object
             path.join("assets", "safari_assets"), // Folder containing the iconset
             cert, // Certificate
-            key // Private Key
+            key, // Private Key
+						intermediate // Intermediate certificate
         );
 
     fs.writeFileSync("pushPackage.zip", zipBuffer);
@@ -48,7 +50,7 @@ So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)
 # Changelog
 
 ## 0.2.0
-- [@dezinezync](https://github.com/dezinezync) Supporting intermediate certificate [#5]
+- Supporting intermediate certificate [#5]
 
 ## 0.1.0
 - [NaN](https://github.com/rvagg/nan) 2 [#4]
@@ -63,6 +65,7 @@ So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)
 
 # Credits
 - [@KenanSulayman](https://github.com/KenanSulayman) for node 0.12 + NaN support (v0.0.2)
+- [@dezinezync](https://github.com/dezinezync) for adding support to intermediate certificates (v0.2.0)
 
 # License
 
