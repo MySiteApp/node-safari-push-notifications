@@ -50,8 +50,8 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, inter
     if (typeof pKeyData == 'string') {
         pKeyData = new Buffer(pKeyData);
     }
-    if(intermediate && typeof intermediate == 'string') {
-        intermediate = new Buffer(intermediate)
+    if (typeof intermediate == 'string') {
+        intermediate = new Buffer(intermediate);
     }
     var pkcs7sig = intermediate ? pkcs7.sign(certData, pKeyData, manifestContent, intermediate) : pkcs7.sign(certData, pKeyData, manifestContent),
         content = PKCS7_CONTENT_REGEX.exec(pkcs7sig.toString());

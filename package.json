@@ -1,6 +1,6 @@
 {
   "name": "safari-push-notifications",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Helper methods for generating resources required by Apple's Safari Push Notifications (http://apple.co/1P39vbY)",
   "main": "index.js",
   "scripts": {

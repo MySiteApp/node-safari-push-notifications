@@ -47,6 +47,9 @@ So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)
 
 # Changelog
 
+## 0.2.0
+- [@dezinezync](https://github.com/dezinezync) Supporting intermediate certificate [#5]
+
 ## 0.1.0
 - [NaN](https://github.com/rvagg/nan) 2 [#4]
 - Node 4.x support

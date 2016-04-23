@@ -35,7 +35,7 @@ NAN_METHOD(Sign) {
     return ThrowTypeError("All parameters should be Buffers");
   }
 
-  if(info.Length() == 4 && !info[3]->IsObject()) {
+  if (info.Length() == 4 && !info[3]->IsObject()) {
     return ThrowTypeError("intermediate certificate should be Buffer");
   }
 
@@ -68,13 +68,12 @@ NAN_METHOD(Sign) {
   BIO *out = BIO_new(BIO_s_mem());
   PKCS7 *p7;
 
-  if(info.Length() == 3) {
+  if (info.Length() == 3) {
     // Sign
     p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
-  }
-  else {
+  } else {
     // Sign with extra cert
-    
+
     char* intermediateCert = node::Buffer::Data(info[3]->ToObject());
     BIO *bio4 = BIO_new_mem_buf(intermediateCert, -1);
     X509 *intermediate = PEM_read_bio_X509(bio4, NULL, NULL, NULL);
