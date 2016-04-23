@@ -23,7 +23,7 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 
 	var cert = fs.readFileSync('cert.pem'),
         key = fs.readFileSync('key.pem'),
-				intermediate = fs.readFileSync('intermediate.crt'),
+        intermediate = fs.readFileSync('intermediate.crt'),
         websiteJson = pushLib.websiteJSON(
             "My Site", // websiteName
             "web.com.mysite.news", // websitePushID
@@ -37,7 +37,7 @@ Certificate and Private Key should be in PEM format (pKey without password for n
             path.join("assets", "safari_assets"), // Folder containing the iconset
             cert, // Certificate
             key, // Private Key
-						intermediate // Intermediate certificate
+            intermediate // Intermediate certificate
         );
 
     fs.writeFileSync("pushPackage.zip", zipBuffer);
