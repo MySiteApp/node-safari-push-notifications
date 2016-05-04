@@ -18,10 +18,7 @@ push.websiteJSON = function(name, pushId, allowedDomains, urlFormattingString, a
     };
 };
 
-push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, intermediate, callback) {
-    if (typeof callback == 'undefined') {
-        throw new Error('this function needs an asynchronous callback')
-    }
+push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, intermediate) {
     if (typeof websiteJSON !== 'object' && !('websitePushID' in websiteJSON)) {
         throw new Error('websiteJSON should be generated using websiteJSON() method');
     }
