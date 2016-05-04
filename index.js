@@ -25,35 +25,40 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, inter
     var zip = new JSZip(),
         manifest = {};
 
-    // Replace addFile method, to calculate the sha1 on every file
-    var _addFile = zip.file;
-    zip.file = function(name, data, o) {
-        manifest[name] = utils.sha1(data);
-        _addFile.apply(zip, Array.prototype.splice.call(arguments, 0));
-    };
-
     // website.json
-    zip.file('website.json', JSON.stringify(websiteJSON));
+    var websiteContent = new Buffer(JSON.stringify(websiteJSON));
+    manifest['website.json'] = utils.sha1(websiteContent);
+    zip.file('website.json', websiteContent);
 
     // icon.iconset
+    var addIconFile = function(name, content) {
+        manifest['icon.iconset/' + name] = utils.sha1(content);
+        icons.file(name, content);
+    };
     var icons = zip.folder('icon.iconset');
-    if (typeof iconsDir == 'string') {
-        // expect directory name
-        fs.readdirSync(iconsDir).forEach(function (name) {
-            var filePath = path.join(iconsDir, name);
-            if (fs.statSync(filePath).isFile()) {
-                icons.file(name, fs.readFileSync(filePath));
+    if (typeof iconsDir == 'object') {
+        // expect object containing file buffers
+        Object.keys(iconsDir).forEach(function(iconName) {
+            var icon = iconsDir[iconName];
+            if (typeof icon == 'string') {
+                // filename given
+                addIconFile(iconName, fs.readFileSync(icon));
+            } else if (icon instanceof Buffer) {
+                // buffer given
+                addIconFile(iconName, icon);
             }
         });
-    } else if (typeof iconsDir == 'object') {
-        // expect object containing file buffers
-        Object.keys(iconsDir).forEach(function(name, i) {
-            icons.file(name, iconsDir[i]);
+    } else if (typeof iconsDir == 'string') {
+        // expect directory name
+        fs.readdirSync(iconsDir).forEach(function(iconName) {
+            var filePath = path.join(iconsDir, iconName);
+            if (fs.statSync(filePath).isFile()) {
+                addIconFile(iconName, fs.readFileSync(filePath));
+            }
         });
     } else {
         throw new Error('iconsDir not recognized');
     }
-    icons.file();
 
     // manifest.json
     var manifestContent = new Buffer(JSON.stringify(manifest));
@@ -70,7 +75,7 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, inter
         intermediate = new Buffer(intermediate);
     }
     var pkcs7sig = intermediate ? pkcs7.sign(certData, pKeyData, manifestContent, intermediate) : pkcs7.sign(certData, pKeyData, manifestContent),
-        content = PKCS7_CONTENT_REGEX.exec(pkcs7sig.toString());
+      content = PKCS7_CONTENT_REGEX.exec(pkcs7sig.toString());
 
     content = new Buffer(content[1], 'base64');
     zip.file('signature', content);
