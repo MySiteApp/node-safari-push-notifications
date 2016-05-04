@@ -59,7 +59,8 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, inter
     icons.file();
 
     // manifest.json
-    zip.file('manifest.json', JSON.stringify(manifest));
+    var manifestContent = new Buffer(JSON.stringify(manifest));
+    zip.file('manifest.json', manifestContent);
 
     // signature
     if (typeof certData == 'string') {
