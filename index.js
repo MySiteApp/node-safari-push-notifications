@@ -78,7 +78,5 @@ push.generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, inter
     content = new Buffer(content[1], 'base64');
     zip.file('signature', content);
 
-    zip.generateAsync({ type: 'nodebuffer '}).then(function(buffer) {
-        callback(buffer);
-    });
+    zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true });
 };
