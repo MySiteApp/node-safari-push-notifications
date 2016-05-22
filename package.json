@@ -1,6 +1,6 @@
 {
   "name": "safari-push-notifications",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Helper methods for generating resources required by Apple's Safari Push Notifications (http://apple.co/1P39vbY)",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "notifications",
     "apple"
   ],
-  "author": "Kobi Meirson <kobi@brow.si>",
+  "author": "Kobi Meirson <kobi@right.co.il>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MySiteApp/node-safari-push-notifications/issues"
