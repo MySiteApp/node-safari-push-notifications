@@ -6,6 +6,10 @@ node-safari-push-notifications
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://l.brow.si/1rAeIvg).
 This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
 
+## Upgrade from 0.2.0 to 0.3.0
+
+`generatePacakge` doesn't return Buffer anymore, but a stream.
+
 ## Installation
 
 Stable version:
@@ -27,22 +31,24 @@ Certificate and Private Key should be in PEM format (pKey without password for n
         key = fs.readFileSync('key.pem'),
         intermediate = fs.readFileSync('intermediate.crt'),
         websiteJson = pushLib.websiteJSON(
-            "My Site", // websiteName
-            "web.com.mysite.news", // websitePushID
-            ["http://push.mysite.com"], // allowedDomains
-            "http://mysite.com/news?id=%@", // urlFormatString
+            'My Site', // websiteName
+            'web.com.mysite.news', // websitePushID
+            ['http://push.mysite.com'], // allowedDomains
+            'http://mysite.com/news?id=%@', // urlFormatString
             0123456789012345, // authenticationToken (zeroFilled to fit 16 chars)
-            "https://" + baseUrl + "/push" // webServiceURL (Must be https!)
+            'https://' + baseUrl + '/push' // webServiceURL (Must be https!)
         );
-    var zipBuffer = pushLib.generatePackage(
-            websiteJson, // The object from before / your own website.json object
-            path.join("assets", "safari_assets"), // Folder containing the iconset
-            cert, // Certificate
-            key, // Private Key
-            intermediate // Intermediate certificate
-        );
-
-    fs.writeFileSync("pushPackage.zip", zipBuffer);
+    pushLib.generatePackage(
+        websiteJson, // The object from before / your own website.json object
+        path.join('assets', 'safari_assets'), // Folder containing the iconset
+        cert, // Certificate
+        key, // Private Key
+        intermediate // Intermediate certificate
+    )
+		.pipe(fs.createWriteStream('pushPackage.zip'))
+		.on('finish', function () {
+			console.log('pushPackage.zip is ready.');
+		});
 ```
 
 # Note
@@ -50,6 +56,9 @@ When building this module, the `PKCS7_Sign` and `SMIME_write_PKCS7` embedded in 
 So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)'s version and it works just as the companion example from Apple.
 
 # Changelog
+
+## 0.3.0
+- BREAKING: JSZip instead of AdmZip, returns zip file as stream instead of buffer. [#8]
 
 ## 0.2.0
 - Supporting intermediate certificate [#5]
