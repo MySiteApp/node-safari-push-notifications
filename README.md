@@ -1,12 +1,12 @@
-node-safari-push-notifications
+node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/node-safari-push-notifications.svg?branch=master)](https://travis-ci.org/MySiteApp/node-safari-push-notifications)
 ==============================
 
 [![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
 
-Helper methods for generating resources required by [Apple's Safari Push Notifications](http://l.brow.si/1rAeIvg).
+Helper methods for generating resources required by [Apple's Safari Push Notifications](http://apple.co/1rAeIvg).
 This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
 
-## Upgrade from 0.2.0 to 0.3.0
+## Upgrading from 0.2.0 to 0.3.x
 
 `generatePacakge` doesn't return Buffer anymore, but a stream.
 
@@ -24,26 +24,26 @@ From git:
 Certificate and Private Key should be in PEM format (pKey without password for now...)
 
 ```javascript
-    var fs = require('fs'),
-        pushLib = require('safari-push-notifications');
+  var fs = require('fs'),
+	  pushLib = require('safari-push-notifications');
 
 	var cert = fs.readFileSync('cert.pem'),
-        key = fs.readFileSync('key.pem'),
-        intermediate = fs.readFileSync('intermediate.crt'),
-        websiteJson = pushLib.websiteJSON(
-            'My Site', // websiteName
-            'web.com.mysite.news', // websitePushID
-            ['http://push.mysite.com'], // allowedDomains
-            'http://mysite.com/news?id=%@', // urlFormatString
-            0123456789012345, // authenticationToken (zeroFilled to fit 16 chars)
-            'https://' + baseUrl + '/push' // webServiceURL (Must be https!)
-        );
+	  key = fs.readFileSync('key.pem'),
+		intermediate = fs.readFileSync('intermediate.crt'),
+		websiteJson = pushLib.websiteJSON(
+			'My Site', // websiteName
+			'web.com.mysite.news', // websitePushID
+      ['http://push.mysite.com'], // allowedDomains
+      'http://mysite.com/news?id=%@', // urlFormatString
+      0123456789012345, // authenticationToken (zeroFilled to fit 16 chars)
+      'https://' + baseUrl + '/push' // webServiceURL (Must be https!)
+    );
     pushLib.generatePackage(
-        websiteJson, // The object from before / your own website.json object
-        path.join('assets', 'safari_assets'), // Folder containing the iconset
-        cert, // Certificate
-        key, // Private Key
-        intermediate // Intermediate certificate
+      websiteJson, // The object from before / your own website.json object
+      path.join('assets', 'safari_assets'), // Folder containing the iconset
+      cert, // Certificate
+      key, // Private Key
+      intermediate // Intermediate certificate
     )
 		.pipe(fs.createWriteStream('pushPackage.zip'))
 		.on('finish', function () {
@@ -51,11 +51,12 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 		});
 ```
 
-# Note
-When building this module, the `PKCS7_Sign` and `SMIME_write_PKCS7` embedded in OS X 10.9 continued to fail.
-So I copied [OpenSSL 0.9.8](https://www.openssl.org/source/openssl-0.9.8.tar.gz)'s version and it works just as the companion example from Apple.
-
 # Changelog
+
+## 0.3.1
+- Removing custom openssl functions, in favor of system libraries.
+- Potentially fixing a bad data read (#12).
+- Adding some tests.
 
 ## 0.3.0
 - BREAKING: JSZip instead of AdmZip, returns zip file as stream instead of buffer. [#8]
