@@ -3,13 +3,10 @@
     {
       "target_name": "pkcs7",
       "sources": [
-          "src/openssl.cc",
           "src/pkcs7.cc"
       ],
-      "libraries": [ "-lssl" ],
-
       'conditions': [
-        [ 'OS=="win"', {
+        ['OS=="win"', {
           'conditions': [
             # "openssl_root" is the directory on Windows of the OpenSSL files
             ['target_arch=="x64"', {
@@ -31,9 +28,8 @@
           'include_dirs': [
             '<(openssl_root)/include'
           ],
-        }, { # OS!="win"
+        }, {  # OS!="win"
           'include_dirs': [
-            # use node's bundled openssl headers on Unix platforms
             '<(node_root_dir)/deps/openssl/openssl/include'
           ],
         }],

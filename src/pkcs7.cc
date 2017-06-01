@@ -3,8 +3,9 @@
 #endif // #ifndef BUILDING_NODE_EXTENSION
 #include <node.h>
 #include <node_buffer.h>
-#include "openssl.h"
 
+#include <openssl/pkcs7.h>
+#include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
 
@@ -70,7 +71,7 @@ NAN_METHOD(Sign) {
 
   if (info.Length() == 3) {
     // Sign
-    p7 = _PKCS7_Sign(cert, pKey, NULL, in, flags);
+    p7 = PKCS7_sign(cert, pKey, NULL, in, flags);
   } else {
     // Sign with extra cert
 
@@ -85,7 +86,7 @@ NAN_METHOD(Sign) {
     STACK_OF(X509) *sk = sk_X509_new_null();
     sk_X509_push(sk, intermediate);
 
-    p7 = _PKCS7_Sign(cert, pKey, sk, in, flags);
+    p7 = PKCS7_sign(cert, pKey, sk, in, flags);
   }
 
   if (p7 == NULL) {
@@ -95,7 +96,7 @@ NAN_METHOD(Sign) {
   (void)BIO_reset(in);
 
   // Finalize
-  _SMIME_write_PKCS7(out, p7, in, flags);
+  SMIME_write_PKCS7(out, p7, in, flags);
 
   // Free
   BIO_free(in);
