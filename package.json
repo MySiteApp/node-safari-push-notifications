@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "install": "node-gyp rebuild",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,10 @@
   "gypfile": true,
   "devDependencies": {
     "concat-stream": "^1.6.0",
+    "coveralls": "^3.0.0",
     "jest": "^20.0.4"
+  },
+  "jest": {
+    "coverageReporters": ["lcov"]
   }
 }

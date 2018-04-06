@@ -1,4 +1,4 @@
-node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/node-safari-push-notifications.svg?branch=master)](https://travis-ci.org/MySiteApp/node-safari-push-notifications)
+node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/node-safari-push-notifications.svg?branch=master)](https://travis-ci.org/MySiteApp/node-safari-push-notifications) [![Coverage Status](https://coveralls.io/repos/github/MySiteApp/node-safari-push-notifications/badge.svg?branch=master)](https://coveralls.io/github/MySiteApp/node-safari-push-notifications?branch=master)
 ==============================
 
 [![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
