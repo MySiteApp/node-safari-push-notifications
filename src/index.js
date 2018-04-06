@@ -77,6 +77,15 @@ var generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, interm
 };
 
 var verify = function(file, signature, cert, intermediate, rootCA) {
+  if (typeof cert === 'string') {
+    cert = new Buffer(cert);
+  }
+  if (typeof intermediate === 'string') {
+    intermediate = new Buffer(intermediate);
+  }
+  if (typeof rootCA === 'string') {
+    rootCA = new Buffer(rootCA);
+  }
   var result = pkcs7.verify(file, signature, cert, intermediate, rootCA);
   if (result !== 1) {  // 1 == successful verification
     throw new Error('Invalid signature');

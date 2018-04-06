@@ -198,10 +198,6 @@ NAN_METHOD(Verify) {
   (void)BIO_reset(in);
   BIO_free(in);
   PKCS7_free(p7Sig);
-
-  if (verifyResult != 1) {
-    return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
-  }
 }
 
 NAN_MODULE_INIT(Init) {

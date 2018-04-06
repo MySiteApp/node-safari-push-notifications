@@ -11,19 +11,31 @@ var name = 'My Site',
   webServiceURL = 'https://news.mysite.com/push';
 
 
-test('websiteJSON returns the right array', function() {
-  var authenticationToken = 10291
-  var websiteJSON = pushLib.websiteJSON(name, websitePushID, allowedDomains,
-    urlFormatString, authenticationToken, webServiceURL);
-  expect(websiteJSON.websiteName).toBe(name);
-  expect(websiteJSON.websitePushID).toBe(websitePushID);
-  expect(websiteJSON.allowedDomains).toBe(allowedDomains);
-  expect(websiteJSON.urlFormatString).toBe(urlFormatString);
+describe('test websiteJSON', function() {
+  test('returns the right array', function() {
+    var authenticationToken = 10291
+    var websiteJSON = pushLib.websiteJSON(name, websitePushID, allowedDomains,
+      urlFormatString, authenticationToken, webServiceURL);
+    expect(websiteJSON.websiteName).toBe(name);
+    expect(websiteJSON.websitePushID).toBe(websitePushID);
+    expect(websiteJSON.allowedDomains).toBe(allowedDomains);
+    expect(websiteJSON.urlFormatString).toBe(urlFormatString);
 
-  var tokenStr = new String(authenticationToken),
-    fullLengthToken = '0'.repeat(16 - tokenStr.length) + tokenStr;
-  expect(websiteJSON.authenticationToken).toBe(fullLengthToken)
-  expect(websiteJSON.webServiceURL).toBe(webServiceURL);
+    var tokenStr = new String(authenticationToken),
+      fullLengthToken = '0'.repeat(16 - tokenStr.length) + tokenStr;
+    expect(websiteJSON.authenticationToken).toBe(fullLengthToken)
+    expect(websiteJSON.webServiceURL).toBe(webServiceURL);
+  });
+
+  test('accepts single domain as allowedDomains', function() {
+    var authenticationToken = 10291
+    var websiteJSON = pushLib.websiteJSON(name, websitePushID, allowedDomains[0],
+      urlFormatString, authenticationToken, webServiceURL);
+    expect(websiteJSON.websiteName).toBe(name);
+    expect(websiteJSON.websitePushID).toBe(websitePushID);
+    expect(websiteJSON.allowedDomains).toEqual(allowedDomains);
+    expect(websiteJSON.urlFormatString).toBe(urlFormatString);
+  });
 });
 
 describe('testing signing', function() {
@@ -34,6 +46,21 @@ describe('testing signing', function() {
     cert = {
       cert: fs.readFileSync(path.join(basePath, 'cert.cert.pem')),
       intermediate: fs.readFileSync(path.join(basePath, 'intermediate.cert.pem')),
+      root: fs.readFileSync(path.join(basePath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(basePath, 'cert.key.pem'))
+    },
+    certStrings = {
+      cert: fs.readFileSync(path.join(basePath, 'cert.cert.pem')).toString('utf8'),
+      intermediate: fs.readFileSync(path.join(basePath, 'intermediate.cert.pem')).toString('utf8'),
+      root: fs.readFileSync(path.join(basePath, 'ca.cert.pem')).toString('utf8'),
+      key: fs.readFileSync(path.join(basePath, 'cert.key.pem')).toString('utf8')
+    },
+    selfSigned = {
+      cert: fs.readFileSync(path.join(basePath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(basePath, 'ca.key.pem'))
+    },
+    invalidCert = {
+      cert: fs.readFileSync(path.join(basePath, 'invalid.cert.pem')),
       root: fs.readFileSync(path.join(basePath, 'ca.cert.pem')),
       key: fs.readFileSync(path.join(basePath, 'cert.key.pem'))
     };
@@ -49,7 +76,11 @@ describe('testing signing', function() {
             return zip.file('manifest.json').async('nodebuffer')
           })
           .then(function (manifest) {
-            expect(pushLib.verify(manifest, sig, certObj.cert, certObj.intermediate, certObj.root)).toBeTruthy();
+            if (withIntermediate) {
+              expect(pushLib.verify(manifest, sig, certObj.cert, certObj.intermediate, certObj.root)).toBeTruthy();  
+            } else {
+              expect(pushLib.verify(manifest, sig, certObj.cert)).toBeTruthy();
+            }
             resolve();
           })
           .catch(function (err) {
@@ -57,7 +88,7 @@ describe('testing signing', function() {
           });
       }
 
-      pushLib.generatePackage(json, icons, certObj.cert, certObj.key, null)
+      pushLib.generatePackage(json, icons, certObj.cert, certObj.key, withIntermediate ? certObj.intermediate : null)
         .pipe(concat(function(final) {
           var zip = new JSZip();
           zip.loadAsync(final).then(zipLoaded);
@@ -84,11 +115,47 @@ describe('testing signing', function() {
     expect(invalidFunc.bind(null, websiteJSON, 123)).toThrow(/iconsDir not recognized/);
   });
 
+  test('iconsDir can be an object', function() {
+    var icons = {};
+    var byContent = false;
+    fs.readdirSync(iconsDir).forEach(function (icon) {
+      if (icon === 'empty') {
+        return;
+      }
+      icons[icon] = path.join(iconsDir, icon);
+      if (!byContent) {
+        icons[icon] = fs.readFileSync(icons[icon]);
+        byContent = true;
+      }
+    });
+    return signAndVerify(websiteJSON, icons, cert, true);
+  });
+
   test('valid signature without intermediate', function () {
-    return signAndVerify(websiteJSON, iconsDir, cert, false);
+    return signAndVerify(websiteJSON, iconsDir, selfSigned, false);
   });
 
   test('valid signature with intermediate', function () {
     return signAndVerify(websiteJSON, iconsDir, cert, true);
+  });
+
+  test('valid string certs signature with intermediate', function () {
+    return signAndVerify(websiteJSON, iconsDir, certStrings, true);
+  });
+
+  test('invalid cert fails decode', function() {
+    expect.assertions(1);
+    return signAndVerify(websiteJSON, iconsDir, invalidCert, true)
+      .catch(function (e) {
+        expect(e.message).toMatch(/bad base64 decode/)
+      });
+  });
+
+  test('invalid cert fails verification', function() {
+    expect.assertions(1);
+    return signAndVerify(websiteJSON, iconsDir, cert, false) // Cert will fail without root
+      .catch(function (e) {
+        expect(e.message).toMatch(/Invalid signature/)
+      });
   });
 });
