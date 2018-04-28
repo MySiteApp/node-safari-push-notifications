@@ -18,8 +18,8 @@ matrix:
     - node_js: node
       script:
         - npm test
-      after_script:
-        - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+after_success:
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 cache:
   directories:
     - "node_modules"
