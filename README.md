@@ -1,7 +1,7 @@
 node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/node-safari-push-notifications.svg?branch=master)](https://travis-ci.org/MySiteApp/node-safari-push-notifications) [![Coverage Status](https://coveralls.io/repos/github/MySiteApp/node-safari-push-notifications/badge.svg?branch=master)](https://coveralls.io/github/MySiteApp/node-safari-push-notifications?branch=master)
 ==============================
 
-[![NPM](https://nodei.co/npm/safari-push-package.png)](https://nodei.co/npm/safari-push-package/)
+[![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
 
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://apple.co/1rAeIvg).
 This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
@@ -14,18 +14,18 @@ This library was written while trying to implement node.js server that answers S
 
 Stable version:
 
-	$ npm install safari-push-package
+	$ npm install safari-push-notifications
 
 From git:
 
-	$ npm install https://github.com/raymondflores/node-safari-push-notifications.git
+	$ npm install git://github.com/MySiteApp/node-safari-push-notifications.git
 
 # Example
 Certificate and Private Key should be in PEM format (pKey without password for now...)
 
 ```javascript
   var fs = require('fs'),
-	  pushLib = require('safari-push-package');
+	  pushLib = require('safari-push-notifications');
 
 	var cert = fs.readFileSync('cert.pem'),
 	  key = fs.readFileSync('key.pem'),
