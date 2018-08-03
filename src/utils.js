@@ -9,9 +9,12 @@ module.exports = {
     }
     return number + ""; // always return a string
   },
-  sha1: function (content) {
-    var shasum = crypto.createHash('sha1');
+  sha512: function (content) {
+    var shasum = crypto.createHash('sha512');
     shasum.update(content);
-    return shasum.digest('hex');
+    return {
+      "hashType": "sha512",
+      "hashValue": shasum.digest('hex')
+    };
   }
 };
