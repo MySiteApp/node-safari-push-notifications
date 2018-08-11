@@ -26,14 +26,14 @@ var generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, interm
 
   // website.json
   var websiteContent = new Buffer(JSON.stringify(websiteJSON));
-  manifest['website.json'] = utils.sha1(websiteContent);
+  manifest['website.json'] = utils.sha512(websiteContent);
   zip.file('website.json', websiteContent);
 
   // icon.iconset
   var icons = zip.folder('icon.iconset'),
     addIconFile = function(name, content) {
       content = typeof content === 'string' ? fs.readFileSync(content) : content;
-      manifest['icon.iconset/' + name] = utils.sha1(content);
+      manifest['icon.iconset/' + name] = utils.sha512(content);
       icons.file(name, content);
     };
   if (typeof iconsDir === 'object') {

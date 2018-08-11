@@ -22,8 +22,8 @@ describe('test zeroFill', function() {
   });
 });
 
-describe('test sha1', function() {
+describe('test sha512', function() {
   test('it works', function() {
-    expect(pushUtils.sha1('itworks')).toBe('fe077c8079ace921b8f9bd00d7e50e049acfda94');
+    expect(pushUtils.sha512('itworks')).toEqual({"hashType": "sha512", "hashValue": "ff3470c61d4e3f66e69bf472fd48ff67b42be150625aa0d825f0fa86dd7cb6c01e54f0c810b9208371ae3295cf892ae051e93455a041dcdafcf2cffb5d2a245a"});
   });
 });
