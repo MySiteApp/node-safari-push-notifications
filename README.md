@@ -53,19 +53,22 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 
 # Changelog
 
+## 0.3.2
+- Manifest File Creation Fix [#17](https://github.com/MySiteApp/node-safari-push-notifications/pull/17)
+
 ## 0.3.1
 - Removing custom openssl functions, in favor of system libraries.
-- Potentially fixing a bad data read (#12).
+- Potentially fixing a bad data read [#12](https://github.com/MySiteApp/node-safari-push-notifications/pull/12).
 - Adding some tests.
 
 ## 0.3.0
-- BREAKING: JSZip instead of AdmZip, returns zip file as stream instead of buffer. [#8]
+- BREAKING: JSZip instead of AdmZip, returns zip file as stream instead of buffer. [#8](https://github.com/MySiteApp/node-safari-push-notifications/pull/8)
 
 ## 0.2.0
-- Supporting intermediate certificate [#5]
+- Supporting intermediate certificate [#5](https://github.com/MySiteApp/node-safari-push-notifications/pull/5)
 
 ## 0.1.0
-- [NaN](https://github.com/rvagg/nan) 2 [#4]
+- [NaN](https://github.com/rvagg/nan) 2 [#4](https://github.com/MySiteApp/node-safari-push-notifications/pull/4)
 - Node 4.x support
 
 ## 0.0.2
@@ -78,6 +81,7 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 # Credits
 - [@KenanSulayman](https://github.com/KenanSulayman) for node 0.12 + NaN support (v0.0.2)
 - [@dezinezync](https://github.com/dezinezync) for adding support to intermediate certificates (v0.2.0)
+- [@raymondflores](https://github.com/raymondflores) for updating the manifest file format (v0.3.2)
 
 # License
 
