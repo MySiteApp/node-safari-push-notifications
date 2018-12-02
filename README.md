@@ -53,6 +53,9 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 
 # Changelog
 
+## 0.3.3
+- Fixing a memory leak in `sign` method [#18](https://github.com/MySiteApp/node-safari-push-notifications/pull/18)
+
 ## 0.3.2
 - Manifest File Creation Fix [#17](https://github.com/MySiteApp/node-safari-push-notifications/pull/17)
 
@@ -82,6 +85,7 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 - [@KenanSulayman](https://github.com/KenanSulayman) for node 0.12 + NaN support (v0.0.2)
 - [@dezinezync](https://github.com/dezinezync) for adding support to intermediate certificates (v0.2.0)
 - [@raymondflores](https://github.com/raymondflores) for updating the manifest file format (v0.3.2)
+- [@loris](https://github.com/loris) for fixing a memory leak (v0.3.3)
 
 # License
 
