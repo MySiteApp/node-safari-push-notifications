@@ -90,6 +90,10 @@ NAN_METHOD(Sign) {
     sk_X509_push(sk, intermediate);
 
     p7 = PKCS7_sign(cert, pKey, sk, in, flags);
+    
+    // Free
+    X509_free(intermediate);
+    sk_X509_free(sk);
   }
 
   if (p7 == NULL) {
