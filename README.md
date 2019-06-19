@@ -6,6 +6,10 @@ node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://apple.co/1rAeIvg).
 This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
 
+## Upgrading from 0.3.x to 0.4.x
+
+Node versions lower than 8 are no longer supported.
+
 ## Upgrading from 0.2.0 to 0.3.x
 
 `generatePacakge` doesn't return Buffer anymore, but a stream.
@@ -52,6 +56,9 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 ```
 
 # Changelog
+
+## 0.4.0
+- Dropping support of node <8 and fixing building with node 12+ [#20](https://github.com/MySiteApp/node-safari-push-notifications/pull/20)
 
 ## 0.3.3
 - Fixing a memory leak in `sign` method [#18](https://github.com/MySiteApp/node-safari-push-notifications/pull/18)
