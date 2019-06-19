@@ -19,6 +19,7 @@ using Nan::HandleScope;
 using Nan::New;
 using Nan::ThrowTypeError;
 using Nan::Set;
+using Nan::To;
 
 using v8::FunctionTemplate;
 using v8::Local;
@@ -44,7 +45,7 @@ NAN_METHOD(Sign) {
   }
 
   // Get cert
-  Local<Object> certObj = info[0]->ToObject();
+  Local<Object> certObj = To<Object>(info[0]).ToLocalChecked();
   BIO *bio1 = BIO_new_mem_buf(node::Buffer::Data(certObj), node::Buffer::Length(certObj));
   X509 *cert = PEM_read_bio_X509(bio1, NULL, NULL, NULL);
   if (cert == NULL) {
@@ -53,7 +54,7 @@ NAN_METHOD(Sign) {
   BIO_free(bio1);
 
   // Get private key
-  Local<Object> pKeyObj = info[1]->ToObject();
+  Local<Object> pKeyObj = To<Object>(info[1]).ToLocalChecked();
   BIO *bio2 = BIO_new_mem_buf(node::Buffer::Data(pKeyObj), node::Buffer::Length(pKeyObj));
   EVP_PKEY *pKey = PEM_read_bio_PrivateKey(bio2, NULL, NULL, NULL);
   if (pKey == NULL) {
@@ -62,7 +63,7 @@ NAN_METHOD(Sign) {
   BIO_free(bio2);
 
   // In data
-  Local<Object> dataObj = info[2]->ToObject();
+  Local<Object> dataObj = To<Object>(info[2]).ToLocalChecked();
   BIO *in = BIO_new_mem_buf(node::Buffer::Data(dataObj), node::Buffer::Length(dataObj));
   if (in == NULL) {
       return ThrowTypeError("Failed allocating memory for the data");
@@ -78,11 +79,12 @@ NAN_METHOD(Sign) {
   } else {
     // Sign with extra cert
 
-    Local<Object> intermediateObj = info[3]->ToObject();
+    Local<Object> intermediateObj = To<Object>(info[3]).ToLocalChecked();
     BIO *bio4 = BIO_new_mem_buf(node::Buffer::Data(intermediateObj), node::Buffer::Length(intermediateObj));
     X509 *intermediate = PEM_read_bio_X509(bio4, NULL, NULL, NULL);
     if (intermediate == NULL) {
-        return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
+      BIO_free(bio4);
+      return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
     }
     BIO_free(bio4);
 
@@ -96,11 +98,11 @@ NAN_METHOD(Sign) {
     sk_X509_free(sk);
   }
 
-  if (p7 == NULL) {
-      return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
-  }
-
   (void)BIO_reset(in);
+
+  if (p7 == NULL) {
+    return ThrowTypeError(ERR_error_string(ERR_peek_error(), NULL));
+  }
 
   // Finalize
   SMIME_write_PKCS7(out, p7, in, flags);
@@ -114,11 +116,10 @@ NAN_METHOD(Sign) {
   // Let's return the BIO as Buffer
   BUF_MEM *bptr;
   BIO_get_mem_ptr(out, &bptr);
-  (void)BIO_set_close(out, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
-  (void)BIO_free(out);
 
   info.GetReturnValue().Set(CopyBuffer(bptr->data, bptr->length).ToLocalChecked());
-  BUF_MEM_free(bptr);
+
+  (void)BIO_free(out); // bptr is pointing to the internal buffer, no need to free it.
 }
 
 NAN_METHOD(Verify) {
@@ -146,14 +147,14 @@ NAN_METHOD(Verify) {
   OpenSSL_add_all_algorithms();
 
   // Load content
-  Local<Object> inObj = info[0]->ToObject();
+  Local<Object> inObj = To<Object>(info[0]).ToLocalChecked();
   BIO *in = BIO_new_mem_buf(node::Buffer::Data(inObj), node::Buffer::Length(inObj));
   if (in == NULL) {
       return ThrowTypeError("Failed allocating memory for the data");
   }
 
   // Load signature
-  Local<Object> sigObject = info[1]->ToObject();
+  Local<Object> sigObject = To<Object>(info[1]).ToLocalChecked();
   const char *sigData = node::Buffer::Data(sigObject);
   BIO *bio1 = BIO_new_mem_buf(sigData, node::Buffer::Length(sigObject));
   PKCS7 *p7Sig = d2i_PKCS7_bio(bio1, NULL);
@@ -165,7 +166,7 @@ NAN_METHOD(Verify) {
   X509_STORE* store = X509_STORE_new();
 
   // Load certificate
-  Local<Object> certObj = info[2]->ToObject();
+  Local<Object> certObj = To<Object>(info[2]).ToLocalChecked();
   BIO *bio2 = BIO_new_mem_buf(node::Buffer::Data(certObj), node::Buffer::Length(certObj));
   X509 *cert = PEM_read_bio_X509(bio2, NULL, NULL, NULL);
   if (cert == NULL) {
@@ -175,7 +176,7 @@ NAN_METHOD(Verify) {
   BIO_free(bio2);
 
   if (hasIntermediate) {
-    Local<Object> intermObj = info[3]->ToObject();
+    Local<Object> intermObj = To<Object>(info[3]).ToLocalChecked();
     BIO *bio3 = BIO_new_mem_buf(node::Buffer::Data(intermObj), node::Buffer::Length(intermObj));
     X509 *intermCert = PEM_read_bio_X509(bio3, NULL, NULL, NULL);
     if (intermCert == NULL) {
@@ -186,7 +187,7 @@ NAN_METHOD(Verify) {
   }
 
   if (hasRoot) {
-    Local<Object> rootObj = info[4]->ToObject();
+    Local<Object> rootObj = To<Object>(info[4]).ToLocalChecked();
     BIO *bio4 = BIO_new_mem_buf(node::Buffer::Data(rootObj), node::Buffer::Length(rootObj));
     X509 *rootCert = PEM_read_bio_X509(bio4, NULL, NULL, NULL);
     if (rootCert == NULL) {
