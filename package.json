@@ -3,6 +3,9 @@
   "version": "0.3.3",
   "description": "Helper methods for generating resources required by Apple's Safari Push Notifications (http://apple.co/1P39vbY)",
   "main": "src/index.js",
+  "engines": {
+    "node": ">=8.0.0 <13.0.0"
+  },
   "scripts": {
     "install": "node-gyp rebuild",
     "test": "jest --coverage"
