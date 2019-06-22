@@ -25,7 +25,7 @@ var generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, interm
     manifest = {};
 
   // website.json
-  var websiteContent = new Buffer(JSON.stringify(websiteJSON));
+  var websiteContent = Buffer.from(JSON.stringify(websiteJSON));
   manifest['website.json'] = utils.sha512(websiteContent);
   zip.file('website.json', websiteContent);
 
@@ -54,23 +54,23 @@ var generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, interm
   }
 
   // manifest.json
-  var manifestContent = new Buffer(JSON.stringify(manifest));
+  var manifestContent = Buffer.from(JSON.stringify(manifest));
   zip.file('manifest.json', manifestContent);
 
   // signature
   if (typeof certData === 'string') {
-    certData = new Buffer(certData);
+    certData = Buffer.from(certData);
   }
   if (typeof pKeyData === 'string') {
-    pKeyData = new Buffer(pKeyData);
+    pKeyData = Buffer.from(pKeyData);
   }
   if (typeof intermediate === 'string') {
-    intermediate = new Buffer(intermediate);
+    intermediate = Buffer.from(intermediate);
   }
   var pkcs7sig = pkcs7.sign(certData, pKeyData, manifestContent, intermediate),
     content = PKCS7_CONTENT_REGEX.exec(pkcs7sig.toString());
 
-  content = new Buffer(content[1], 'base64');
+  content = Buffer.from(content[1], 'base64');
   zip.file('signature', content);
 
   return zip.generateNodeStream({ type: 'nodebuffer', streamFiles: false });
@@ -78,13 +78,13 @@ var generatePackage = function(websiteJSON, iconsDir, certData, pKeyData, interm
 
 var verify = function(file, signature, cert, intermediate, rootCA) {
   if (typeof cert === 'string') {
-    cert = new Buffer(cert);
+    cert = Buffer.from(cert);
   }
   if (typeof intermediate === 'string') {
-    intermediate = new Buffer(intermediate);
+    intermediate = Buffer.from(intermediate);
   }
   if (typeof rootCA === 'string') {
-    rootCA = new Buffer(rootCA);
+    rootCA = Buffer.from(rootCA);
   }
   var result = pkcs7.verify(file, signature, cert, intermediate, rootCA);
   if (result !== 1) {  // 1 == successful verification

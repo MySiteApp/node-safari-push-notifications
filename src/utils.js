@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-var utils = module.exports = {};
 
 module.exports = {
   zeroFill: function(number, width) {
