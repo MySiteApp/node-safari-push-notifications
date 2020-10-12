@@ -9,8 +9,8 @@ addons:
     packages:
     - g++-4.8
 node_js:
+  - "12"
   - "10"
-  - "8"
 matrix:
   include:
     - node_js: node
