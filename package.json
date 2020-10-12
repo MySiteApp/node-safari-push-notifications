@@ -8,7 +8,8 @@
   },
   "scripts": {
     "install": "node-gyp rebuild",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",

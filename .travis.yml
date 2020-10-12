@@ -1,5 +1,9 @@
 language: node_js
 sudo: false
+os:
+  - linux
+  - osx
+  - windows
 env:
   - CXX=g++-4.8
 addons:
@@ -16,8 +20,7 @@ matrix:
     - node_js: node
       script:
         - npm test
-after_success:
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+after_success: if [[ "$TRAVIS_OS_NAME" != 'windows' ]]; then npm run coverage; fi
 cache:
   directories:
     - "node_modules"
