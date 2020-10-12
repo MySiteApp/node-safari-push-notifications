@@ -3,8 +3,8 @@ sudo: false
 git:
   depth: false
 os:
-  # - linux
-  # - osx
+  - linux
+  - osx
   - windows
 addons:
   apt:
@@ -14,8 +14,8 @@ addons:
     - g++-4.8
 node_js:
   - node
-  # - "12"
-  # - "10"
+  - "12"
+  - "10"
 script:
   - npm test
 after_success: if [[ "$TRAVIS_OS_NAME" != 'windows' ]]; then npm run coverage; fi
