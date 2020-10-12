@@ -11,19 +11,18 @@
             # "openssl_root" is the directory on Windows of the OpenSSL files
             ['target_arch=="x64"', {
               'variables': {
-                'openssl_root%': 'C:/Program Files/OpenSSL-Win64'
+                'openssl_root%': 'C:/OpenSSL-Win64'
               },
+	            'libraries': ['<(openssl_root)/lib/<!@(dir /B C:\OpenSSL-Win64\lib\libeay32.lib C:\OpenSSL-Win64\lib\libcrypto.lib)'],
             }, {
               'variables': {
-                'openssl_root%': 'C:/Program Files (x86)/OpenSSL-Win32'
+                'openssl_root%': 'C:/OpenSSL-Win32'
               },
+	            'libraries': ['<(openssl_root)/lib/<!@(dir /B C:\OpenSSL-Win32\lib\libeay32.lib C:\OpenSSL-Win32\lib\libcrypto.lib)'],
             }],
           ],
           'defines': [
             'uint=unsigned int',
-          ],
-          'libraries': [
-            '-L<(openssl_root)/lib',
           ],
           'include_dirs': [
             '<(openssl_root)/include'
