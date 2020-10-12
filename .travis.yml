@@ -2,6 +2,10 @@ language: node_js
 sudo: false
 git:
   depth: false
+os:
+  # - linux
+  # - osx
+  - windows
 addons:
   apt:
     sources:
@@ -10,16 +14,8 @@ addons:
     - g++-4.8
 node_js:
   - node
-  - "12"
-  - "10"
-matrix:
-  include:
-    - os: linux
-      env:
-        - CXX=g++-4.8
-    - os: osx
-    - os: windows
-
+  # - "12"
+  # - "10"
 script:
   - npm test
 after_success: if [[ "$TRAVIS_OS_NAME" != 'windows' ]]; then npm run coverage; fi
