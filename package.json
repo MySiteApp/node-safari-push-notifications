@@ -8,7 +8,8 @@
   },
   "scripts": {
     "install": "node-gyp rebuild",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -27,15 +28,15 @@
   },
   "homepage": "https://github.com/MySiteApp/node-safari-push-notifications",
   "dependencies": {
-    "bindings": "^1.3.0",
-    "jszip": "^3.1.5",
-    "nan": "^2.14.0"
+    "bindings": "^1.5.0",
+    "jszip": "^3.5.0",
+    "nan": "^2.14.1"
   },
   "gypfile": true,
   "devDependencies": {
     "concat-stream": "^1.6.2",
-    "coveralls": "^3.0.4",
-    "jest": "^24.8.0"
+    "coveralls": "^3.1.0",
+    "jest": "^26.5.0"
   },
   "jest": {
     "coverageReporters": [
