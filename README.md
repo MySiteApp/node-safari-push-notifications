@@ -6,6 +6,10 @@ node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://apple.co/1rAeIvg).
 This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
 
+## Upgrading from 0.4.x to 0.5.x
+
+Node versions lower than 10 are no longer supported.
+
 ## Upgrading from 0.3.x to 0.4.x
 
 Node versions lower than 8 are no longer supported.
@@ -57,6 +61,10 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 
 # Changelog
 
+## 0.5.0
+- Dropping support of node <10 [#30](https://github.com/MySiteApp/node-safari-push-notifications/pull/30)
+- Better support for windows installation with OpenSSL 1.0.x and 1.1.x [#30](https://github.com/MySiteApp/node-safari-push-notifications/pull/30)
+
 ## 0.4.0
 - Dropping support of node <8 and fixing building with node 12+ [#20](https://github.com/MySiteApp/node-safari-push-notifications/pull/20)
 
@@ -93,6 +101,7 @@ Certificate and Private Key should be in PEM format (pKey without password for n
 - [@dezinezync](https://github.com/dezinezync) for adding support to intermediate certificates (v0.2.0)
 - [@raymondflores](https://github.com/raymondflores) for updating the manifest file format (v0.3.2)
 - [@loris](https://github.com/loris) for fixing a memory leak (v0.3.3)
+- [@sm2017](https://github.com/sm2017) for pointing the error with OpenSSL v1.1.x on Windows (v0.5.0)
 
 # License
 
