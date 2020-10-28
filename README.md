@@ -4,7 +4,8 @@ node-safari-push-notifications [![Build Status](https://travis-ci.org/MySiteApp/
 [![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
 
 Helper methods for generating resources required by [Apple's Safari Push Notifications](http://apple.co/1rAeIvg).
-This library was written while trying to implement node.js server that answers Safari, but it seems that OpenSSL's PKCS7 functions weren't available.
+This library was written while trying to implement a NodeJS server that answers Safari push notification requests.
+The OpenSSL's PKCS7 functions are not available in NodeJS's implementation and must be added as external bindings.
 
 ## Upgrading from 0.4.x to 0.5.x
 
