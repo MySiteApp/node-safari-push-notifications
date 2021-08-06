@@ -1,0 +1,78 @@
+version: 2.1
+
+orbs:
+  windows: circleci/windows@2.4.0
+
+commands:
+  test:
+    parameters:
+      version:
+        default: current
+        type: string
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node-<< parameters.version >>-deps-{{ arch }}-v1-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+            - node-<< parameters.version >>-deps-{{ arch }}-v1-{{ checksum "package.json" }}-
+            - node-<< parameters.version >>-deps-{{ arch }}-v1-
+      - run:
+          name: Install packages
+          command: npm ci
+      - save_cache:
+          key: node-<< parameters.version >>-deps-{{ arch }}-v1-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+          paths:
+              - ~/.npm
+      - run:
+          name: Run Tests
+          command: npm test
+
+jobs:
+  test-linux:
+    parameters:
+      version:
+        default: current
+        type: string
+    docker:
+      - image: cimg/node:<< parameters.version >>
+    steps:
+      - test:
+          version: << parameters.version >>
+      - run:
+          name: Report to coveralls
+          when: on_success
+          command: npm run coverage
+  test-macos:
+    parameters:
+      version:
+        default: "12.5.1"
+        type: string
+    macos:
+      xcode: << parameters.version >>
+    steps:
+      - test:
+          version: << parameters.version >>
+  test-windows:
+    executor:
+      name: windows/default
+    steps:
+      - test:
+          version: default
+
+workflows:
+  test:
+    jobs:
+      - test-linux:
+          matrix:
+            parameters:
+              version:
+                - current
+                - lts
+                - "12.22"
+      # - test-macos:
+      #     matrix:
+      #       parameters:
+      #         version:
+      #         - "11.2.1" # Node 12
+      #         - "12.5.1" # Node 14
+      - test-windows
