@@ -6,6 +6,10 @@ orbs:
 
 jobs:
   test:
+    parameters:
+      version:
+        default: latest
+        type: string
     executor:
       name: node/default
       tag: << parameters.version >>
