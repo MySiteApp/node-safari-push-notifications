@@ -37,4 +37,4 @@ workflows:
             parameters:
               # version: ["latest", "lts", "12"]
               version: ["12"]
-      - test-win
+      - test-windows
