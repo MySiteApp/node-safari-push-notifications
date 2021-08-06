@@ -1,27 +1,10 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.6
   windows: circleci/windows@2.4.0
 
-jobs:
+commands:
   test:
-    parameters:
-      version:
-        default: latest
-        type: string
-    executor:
-      name: node/default
-      tag: << parameters.version >>
-    steps:
-      - checkout
-      - node/install-packages
-      - run:
-          name: Run Tests
-          command: npm test
-  test-windows:
-    executor:
-      name: windows/default
     steps:
       - checkout
       - restore_cache:
@@ -40,12 +23,45 @@ jobs:
           name: Run Tests
           command: npm test
 
+jobs:
+  test-linux:
+    parameters:
+      version:
+        default: latest
+        type: string
+    docker:
+      - image: cimg/node:<< parameters.version >>
+    steps:
+      - test
+  test-macos:
+    parameters:
+      version:
+        default: latest
+        type: string
+    macos:
+      xcode: << parameters.version >>
+    steps:
+      - test
+  test-windows:
+    executor:
+      name: windows/default
+    steps:
+      - test
+
 workflows:
   test:
     jobs:
-      - test:
+      - test-linux:
           matrix:
             parameters:
-              # version: ["latest", "lts", "12.22"]
-              version: ["12.22"]
+              version:
+                - latest
+                - lts
+                - "12.22"
+      - test-macos:
+          matrix:
+            parameters:
+              version:
+              - "11.2.1" # Node 12
+              - "12.5.1" # Node 14
       - test-windows
