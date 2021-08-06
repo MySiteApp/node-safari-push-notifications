@@ -38,6 +38,10 @@ jobs:
     steps:
       - test:
           version: << parameters.version >>
+      - run:
+          name: Report to coveralls
+          when: on_success
+          command: npm run coverage
   test-macos:
     parameters:
       version:
