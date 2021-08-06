@@ -1,0 +1,36 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.6
+  windows: circleci/windows@2.4.0
+
+jobs:
+  test:
+    executor:
+      name: node/default
+      tag: << parameters.version >>
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Run Tests
+          command: npm run test
+  test-windows:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Run Tests
+          command: npm run test
+
+workflows:
+  test:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              # version: ["latest", "lts", "12"]
+              version: ["12"]
+      - test-win
