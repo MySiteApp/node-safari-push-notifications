@@ -45,7 +45,7 @@ jobs:
   test-macos:
     parameters:
       version:
-        default: "14"
+        default: "14.19"
         type: string
     macos:
       xcode: << parameters.version >>
@@ -67,7 +67,7 @@ workflows:
             parameters:
               version:
                 - lts
-                - "14"
+                - "14.19"
       # - test-macos:
       #     matrix:
       #       parameters:
