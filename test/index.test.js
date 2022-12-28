@@ -42,7 +42,7 @@ describe('test websiteJSON', function() {
 describe('testing signing', function() {
   var websiteJSON = null,
     authenticationToken = 0,
-    basePath = path.join('test', 'files'),
+    basePath = path.join(__dirname, 'files'),
     iconsDir = path.join(basePath, 'icons'),
     certsPath = path.join(basePath, 'certs'),
     cert, certStrings, selfSigned, invalidCert;
@@ -79,7 +79,9 @@ describe('testing signing', function() {
   }
 
   beforeAll(function() {
-    execFileSync(path.join(certsPath, 'generate.sh'));
+    if (!fs.fileExistsSync(path.join(certsPath, 'cert.cert.pem'))) {
+      execFileSync(path.join(certsPath, 'generate.sh'));
+    }
 
     cert = {
       cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')),

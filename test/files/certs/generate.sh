@@ -16,7 +16,7 @@ SUBJ="/C=US/O=Alice/CN="
 if [ "$OS" == "Windows_NT" ]; then SUBJ="//C=US\O=Alice\CN="; fi
 
 echo Generating root folder structure
-for root in root-ca root-intermediate
+for root in root-ca root-intermediate root-dummy
 do
     rm -rf $root
     for i in certs crl newcerts private
@@ -55,6 +55,7 @@ openssl ca -config ca_root.cnf \
 echo Generating cert
 openssl genrsa -out $CERT_KEY 2048
 openssl req -new -sha256 \
+    -config ca_dummy.cnf \
     -key $CERT_KEY \
     -out cert.csr \
     -subj "${SUBJ}example.com"
