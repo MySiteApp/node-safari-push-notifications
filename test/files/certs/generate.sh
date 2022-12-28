@@ -12,6 +12,9 @@ INTERMEDIATE_CERT=intermediate.cert.pem
 CERT_KEY=cert.key.pem
 CERT_CERT=cert.cert.pem
 
+SUBJ="/C=US/O=Alice/CN="
+if [ "$OS" == "Windows_NT" ]; then SUBJ="//C=US\O=Alice\CN="; fi
+
 echo Generating root folder structure
 for root in root-ca root-intermediate
 do
@@ -30,7 +33,7 @@ openssl req -config ca_root.cnf \
     -key $CA_KEY \
     -new -x509 -days 7305 -sha256 -extensions v3_ca \
     -out $CA_CERT \
-    -subj "/C=US/O=Alice/CN=Root CA"
+    -subj "${SUBJ}Root CA"
 
 
 
@@ -40,7 +43,7 @@ openssl req -config ca_intermediate.cnf \
     -new -sha256 \
     -key $INTERMEDIATE_KEY \
     -out intermediate.csr \
-    -subj "/C=US/O=Alice/CN=Intermediate Certificate"
+    -subj "${SUBJ}Intermediate Certificate"
 openssl ca -config ca_root.cnf \
     -extensions v3_intermediate_ca \
     -days 3653 -notext -md sha256 \
@@ -54,7 +57,7 @@ openssl genrsa -out $CERT_KEY 2048
 openssl req -new -sha256 \
     -key $CERT_KEY \
     -out cert.csr \
-    -subj "/C=US/O=Alice/CN=example.com"
+    -subj "${SUBJ}example.com"
 openssl ca -config ca_intermediate.cnf \
     -extensions server_cert \
     -days 375 -notext -md sha256 \
