@@ -45,27 +45,7 @@ describe('testing signing', function() {
     basePath = path.join('test', 'files'),
     iconsDir = path.join(basePath, 'icons'),
     certsPath = path.join(basePath, 'certs'),
-    cert = {
-      cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')),
-      intermediate: fs.readFileSync(path.join(certsPath, 'intermediate.cert.pem')),
-      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
-      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem'))
-    },
-    certStrings = {
-      cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')).toString('utf8'),
-      intermediate: fs.readFileSync(path.join(certsPath, 'intermediate.cert.pem')).toString('utf8'),
-      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')).toString('utf8'),
-      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem')).toString('utf8')
-    },
-    selfSigned = {
-      cert: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
-      key: fs.readFileSync(path.join(certsPath, 'ca.key.pem'))
-    },
-    invalidCert = {
-      cert: fs.readFileSync(path.join(basePath, 'invalid.cert.pem')),
-      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
-      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem'))
-    };
+    cert, certStrings, selfSigned, invalidCert;
 
   function signAndVerify(json, icons, certObj, withIntermediate) {
     var sig;
@@ -100,6 +80,28 @@ describe('testing signing', function() {
 
   beforeAll(function() {
     execFileSync(path.join(certsPath, 'generate.sh'));
+
+    cert = {
+      cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')),
+      intermediate: fs.readFileSync(path.join(certsPath, 'intermediate.cert.pem')),
+      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem'))
+    };
+    certStrings = {
+      cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')).toString('utf8'),
+      intermediate: fs.readFileSync(path.join(certsPath, 'intermediate.cert.pem')).toString('utf8'),
+      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')).toString('utf8'),
+      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem')).toString('utf8')
+    };
+    selfSigned = {
+      cert: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(certsPath, 'ca.key.pem'))
+    };
+    invalidCert = {
+      cert: fs.readFileSync(path.join(basePath, 'invalid.cert.pem')),
+      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem'))
+    };
   });
 
   beforeEach(function() {
