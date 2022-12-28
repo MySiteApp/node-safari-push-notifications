@@ -4,7 +4,7 @@ orbs:
   windows: circleci/windows@2.4.0
 
 commands:
-  test-prep:
+  test:
     parameters:
       version:
         default: current

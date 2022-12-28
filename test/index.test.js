@@ -79,7 +79,7 @@ describe('testing signing', function() {
   }
 
   beforeAll(function() {
-    if (!fs.fileExistsSync(path.join(certsPath, 'cert.cert.pem'))) {
+    if (!fs.existsSync(path.join(certsPath, 'cert.cert.pem'))) {
       execFileSync(path.join(certsPath, 'generate.sh'));
     }
 
