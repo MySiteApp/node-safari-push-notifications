@@ -24,6 +24,10 @@ commands:
           paths:
               - ~/.npm
       - run:
+          name: Generate certificates
+          command: ./test/files/certs/generate.sh
+          shell: bash
+      - run:
           name: Run Tests
           command: npm test
 
@@ -31,7 +35,6 @@ jobs:
   test-linux:
     parameters:
       version:
-        default: current
         type: string
     docker:
       - image: cimg/node:<< parameters.version >>
@@ -45,7 +48,6 @@ jobs:
   test-macos:
     parameters:
       version:
-        default: "14.19"
         type: string
     macos:
       xcode: << parameters.version >>
@@ -67,7 +69,8 @@ workflows:
             parameters:
               version:
                 - lts
-                - "14.19"
+                - "16.18.1"
+                - "14.21.1"
       # - test-macos:
       #     matrix:
       #       parameters:

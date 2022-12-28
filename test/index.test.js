@@ -2,7 +2,8 @@ var pushLib = require('../src/index')
   path = require('path'),
   concat = require('concat-stream'),
   fs = require('fs'),
-  JSZip = require('jszip');
+  JSZip = require('jszip'),
+  execFileSync = require('child_process').execFileSync;
 
 var name = 'My Site',
   websitePushID = 'web.com.mysite.news',
@@ -41,29 +42,10 @@ describe('test websiteJSON', function() {
 describe('testing signing', function() {
   var websiteJSON = null,
     authenticationToken = 0,
-    basePath = path.join('test', 'files')
+    basePath = path.join(__dirname, 'files'),
     iconsDir = path.join(basePath, 'icons'),
-    cert = {
-      cert: fs.readFileSync(path.join(basePath, 'cert.cert.pem')),
-      intermediate: fs.readFileSync(path.join(basePath, 'intermediate.cert.pem')),
-      root: fs.readFileSync(path.join(basePath, 'ca.cert.pem')),
-      key: fs.readFileSync(path.join(basePath, 'cert.key.pem'))
-    },
-    certStrings = {
-      cert: fs.readFileSync(path.join(basePath, 'cert.cert.pem')).toString('utf8'),
-      intermediate: fs.readFileSync(path.join(basePath, 'intermediate.cert.pem')).toString('utf8'),
-      root: fs.readFileSync(path.join(basePath, 'ca.cert.pem')).toString('utf8'),
-      key: fs.readFileSync(path.join(basePath, 'cert.key.pem')).toString('utf8')
-    },
-    selfSigned = {
-      cert: fs.readFileSync(path.join(basePath, 'ca.cert.pem')),
-      key: fs.readFileSync(path.join(basePath, 'ca.key.pem'))
-    },
-    invalidCert = {
-      cert: fs.readFileSync(path.join(basePath, 'invalid.cert.pem')),
-      root: fs.readFileSync(path.join(basePath, 'ca.cert.pem')),
-      key: fs.readFileSync(path.join(basePath, 'cert.key.pem'))
-    };
+    certsPath = path.join(basePath, 'certs'),
+    cert, certStrings, selfSigned, invalidCert;
 
   function signAndVerify(json, icons, certObj, withIntermediate) {
     var sig;
@@ -95,6 +77,34 @@ describe('testing signing', function() {
         }));
     });
   }
+
+  beforeAll(function() {
+    if (!fs.existsSync(path.join(certsPath, 'cert.cert.pem'))) {
+      execFileSync(path.join(certsPath, 'generate.sh'));
+    }
+
+    cert = {
+      cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')),
+      intermediate: fs.readFileSync(path.join(certsPath, 'intermediate.cert.pem')),
+      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem'))
+    };
+    certStrings = {
+      cert: fs.readFileSync(path.join(certsPath, 'cert.cert.pem')).toString('utf8'),
+      intermediate: fs.readFileSync(path.join(certsPath, 'intermediate.cert.pem')).toString('utf8'),
+      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')).toString('utf8'),
+      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem')).toString('utf8')
+    };
+    selfSigned = {
+      cert: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(certsPath, 'ca.key.pem'))
+    };
+    invalidCert = {
+      cert: fs.readFileSync(path.join(basePath, 'invalid.cert.pem')),
+      root: fs.readFileSync(path.join(certsPath, 'ca.cert.pem')),
+      key: fs.readFileSync(path.join(certsPath, 'cert.key.pem'))
+    };
+  });
 
   beforeEach(function() {
     authenticationToken = parseInt(Math.random() * 1000000000);
