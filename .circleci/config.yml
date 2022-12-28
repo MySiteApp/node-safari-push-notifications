@@ -65,8 +65,8 @@ workflows:
             parameters:
               version:
                 - lts
-                - "16"
-                - "14"
+                - "16.18.1"
+                - "14.21.1"
       # - test-macos:
       #     matrix:
       #       parameters:
