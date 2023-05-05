@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   windows: circleci/windows@2.4.0
+  coveralls: coveralls/coveralls@2.1.1
 
 commands:
   test:
@@ -9,6 +10,9 @@ commands:
       version:
         default: current
         type: string
+      coverage:
+        default: false
+        type: boolean
     steps:
       - checkout
       - restore_cache:
@@ -27,10 +31,20 @@ commands:
           name: Generate certificates
           command: ./test/files/certs/generate.sh
           shell: bash
-      - run:
-          name: Run Tests
-          command: npm test
-
+      - when:
+          condition:
+            not: << parameters.coverage >>
+          steps:
+            - run:
+                name: Run Tests
+                command: npm test
+      - when:
+          condition: << parameters.coverage >>
+          steps:
+            - run:
+                name: Run Tests
+                command: npm test -- --coverage
+            - coveralls/upload
 jobs:
   test-linux:
     parameters:
@@ -41,10 +55,7 @@ jobs:
     steps:
       - test:
           version: << parameters.version >>
-      - run:
-          name: Report to coveralls
-          when: on_success
-          command: npm run coverage
+          coverage: true
   test-macos:
     parameters:
       version:

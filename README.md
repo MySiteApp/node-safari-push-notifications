@@ -1,4 +1,4 @@
-node-safari-push-notifications [![CircleCI](https://circleci.com/gh/MySiteApp/node-safari-push-notifications/tree/master.svg?style=svg)](https://circleci.com/gh/MySiteApp/node-safari-push-notifications/tree/master) [![Coverage Status](https://coveralls.io/repos/github/MySiteApp/node-safari-push-notifications/badge.svg?branch=master)]
+node-safari-push-notifications [![CircleCI](https://circleci.com/gh/MySiteApp/node-safari-push-notifications/tree/master.svg?style=svg)](https://circleci.com/gh/MySiteApp/node-safari-push-notifications/tree/master) [![Coverage Status](https://coveralls.io/repos/github/MySiteApp/node-safari-push-notifications/badge.svg?branch=master)](https://coveralls.io/github/MySiteApp/node-safari-push-notifications?branch=master)
 ==============================
 
 [![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
@@ -33,31 +33,33 @@ From git:
 Certificate and Private Key should be in PEM format (pKey without password for now...)
 
 ```javascript
-  var fs = require('fs'),
-	  pushLib = require('safari-push-notifications');
+var fs = require("fs"),
+  pushLib = require("safari-push-notifications");
 
-	var cert = fs.readFileSync('cert.pem'),
-	  key = fs.readFileSync('key.pem'),
-		intermediate = fs.readFileSync('intermediate.crt'),
-		websiteJson = pushLib.websiteJSON(
-			'My Site', // websiteName
-			'web.com.mysite.news', // websitePushID
-      ['http://push.mysite.com'], // allowedDomains
-      'http://mysite.com/news?id=%@', // urlFormatString
-      0123456789012345, // authenticationToken (zeroFilled to fit 16 chars)
-      'https://' + baseUrl + '/push' // webServiceURL (Must be https!)
-    );
-    pushLib.generatePackage(
-      websiteJson, // The object from before / your own website.json object
-      path.join('assets', 'safari_assets'), // Folder containing the iconset
-      cert, // Certificate
-      key, // Private Key
-      intermediate // Intermediate certificate
-    )
-		.pipe(fs.createWriteStream('pushPackage.zip'))
-		.on('finish', function () {
-			console.log('pushPackage.zip is ready.');
-		});
+var cert = fs.readFileSync("cert.pem"),
+  key = fs.readFileSync("key.pem"),
+  intermediate = fs.readFileSync("intermediate.crt"),
+  websiteJson = pushLib.websiteJSON(
+    "My Site", // websiteName
+    "web.com.mysite.news", // websitePushID
+    ["http://push.mysite.com"], // allowedDomains
+    "http://mysite.com/news?id=%@", // urlFormatString
+    0123456789012345, // authenticationToken (zeroFilled to fit 16 chars)
+    "https://" + baseUrl + "/push" // webServiceURL (Must be https!)
+  );
+pushLib
+  .generatePackage(
+    websiteJson, // The object from before / your own website.json object
+    path.join("assets", "safari_assets"), // Folder containing the iconset
+    cert, // Certificate
+    key, // Private Key
+    intermediate // Intermediate certificate
+  )
+  .pipe(fs.createWriteStream("pushPackage.zip"))
+  .on("finish", function () {
+    console.log("pushPackage.zip is ready.");
+  });
+
 ```
 
 # Changelog
