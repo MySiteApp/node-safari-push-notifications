@@ -10,6 +10,9 @@ commands:
       version:
         default: current
         type: string
+      coverage:
+        default: false
+        type: boolean
     steps:
       - checkout
       - restore_cache:
@@ -28,9 +31,21 @@ commands:
           name: Generate certificates
           command: ./test/files/certs/generate.sh
           shell: bash
-      - run:
-          name: Run Tests
-          command: npm test
+      - when:
+          condition:
+            not: << parameters.coverage >>
+          steps:
+            - run:
+                name: Run Tests
+                command: npm test
+      - when:
+          condition: << parameters.coverage >>
+          steps:
+            - run:
+                name: Run Tests
+                command: npm test -- --coverage
+            - coveralls/upload:
+                when: on_success
 
 jobs:
   test-linux:
@@ -42,8 +57,7 @@ jobs:
     steps:
       - test:
           version: << parameters.version >>
-      - coveralls/upload:
-          when: on_success
+          coverage: true
   test-macos:
     parameters:
       version:

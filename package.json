@@ -8,7 +8,7 @@
   },
   "scripts": {
     "install": "node-gyp rebuild",
-    "test": "jest --coverage"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
