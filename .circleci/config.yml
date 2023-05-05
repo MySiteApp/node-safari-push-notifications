@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   windows: circleci/windows@2.4.0
+  coveralls: coveralls/coveralls@2.1.1
 
 commands:
   test:
@@ -41,10 +42,8 @@ jobs:
     steps:
       - test:
           version: << parameters.version >>
-      - run:
-          name: Report to coveralls
+      - coveralls/upload:
           when: on_success
-          command: npm run coverage
   test-macos:
     parameters:
       version:
