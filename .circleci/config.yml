@@ -44,9 +44,7 @@ commands:
             - run:
                 name: Run Tests
                 command: npm test -- --coverage
-            - coveralls/upload:
-                when: on_success
-
+            - coveralls/upload
 jobs:
   test-linux:
     parameters:
