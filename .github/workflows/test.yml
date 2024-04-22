@@ -1,0 +1,26 @@
+name: Continuous Integration
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        node: [ 18, 20 ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            node: 20
+            coverage: true
+    runs-on: ${{ matrix.os }}
+    name: Node ${{ matrix.node }} (${{ matrix.os }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      - name: Generate certificates
+        run: ./test/files/certs/generate.sh
+        shell: bash
+      - run: npm test ${{ matrix.coverage && '-- --coverage' || '' }}
+      - if: ${{ matrix.coverage }}
+        name: Upload coverage
+        uses: coverallsapp/github-action@v2
