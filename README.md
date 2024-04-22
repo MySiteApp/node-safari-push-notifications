@@ -1,4 +1,4 @@
-node-safari-push-notifications ![Test Workflow](https://github.com/MySiteApp/node-safari-push-notifications/actions/workflows/test.yml/badge.svg)] [![Coverage Status](https://coveralls.io/repos/github/MySiteApp/node-safari-push-notifications/badge.svg?branch=master)](https://coveralls.io/github/MySiteApp/node-safari-push-notifications?branch=master)
+node-safari-push-notifications ![Test Workflow](https://github.com/MySiteApp/node-safari-push-notifications/actions/workflows/test.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/MySiteApp/node-safari-push-notifications/badge.svg?branch=master)](https://coveralls.io/github/MySiteApp/node-safari-push-notifications?branch=master)
 ==============================
 
 [![NPM](https://nodei.co/npm/safari-push-notifications.png)](https://nodei.co/npm/safari-push-notifications/)
