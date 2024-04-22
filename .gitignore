@@ -3,3 +3,5 @@ node_modules
 build
 coverage/
 test/files/certs/
+.DS_Store
+.vscode

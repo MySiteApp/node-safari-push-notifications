@@ -7,6 +7,10 @@ Helper methods for generating resources required by [Apple's Safari Push Notific
 This library was written while trying to implement a NodeJS server that answers Safari push notification requests.
 The OpenSSL's PKCS7 functions are not available in NodeJS's implementation and must be added as external bindings.
 
+## Upgrading from 0.5.x to 0.6.x
+
+Node versions lower than 18 are no longer supported.
+
 ## Upgrading from 0.4.x to 0.5.x
 
 Node versions lower than 10 are no longer supported.
@@ -63,6 +67,9 @@ pushLib
 ```
 
 # Changelog
+
+## 0.6.0
+- Dropping support of node <16
 
 ## 0.5.0
 - Dropping support of node <10 [#30](https://github.com/MySiteApp/node-safari-push-notifications/pull/30)

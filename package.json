@@ -1,10 +1,10 @@
 {
   "name": "safari-push-notifications",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Helper methods for generating resources required by Apple's Safari Push Notifications (http://apple.co/1P39vbY)",
   "main": "src/index.js",
   "engines": {
-    "node": ">=14.0.0 <19.0.0"
+    "node": ">=18.0.0 <21.0.0"
   },
   "scripts": {
     "install": "node-gyp rebuild",
@@ -29,7 +29,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "jszip": "^3.9.1",
-    "nan": "^2.15.0"
+    "nan": "^2.19.0"
   },
   "gypfile": true,
   "devDependencies": {
